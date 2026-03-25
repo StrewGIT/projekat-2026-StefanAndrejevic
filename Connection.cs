@@ -9,7 +9,7 @@ namespace projekat_2026_StefanAndrejevic
 {
     internal class Connection
     {
-        public static SqlConnection connect()
+        public static SqlConnection Connect()
         {
             string cs;
             cs = ConfigurationManager.ConnectionStrings["skola"].ConnectionString;

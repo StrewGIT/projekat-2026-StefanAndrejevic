@@ -33,12 +33,13 @@
             this.TBoxEmail = new System.Windows.Forms.TextBox();
             this.TBoxPass = new System.Windows.Forms.TextBox();
             this.BtnLogin = new System.Windows.Forms.Button();
+            this.LblDobrodosli = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // LblEmail
             // 
             this.LblEmail.AutoSize = true;
-            this.LblEmail.Location = new System.Drawing.Point(41, 42);
+            this.LblEmail.Location = new System.Drawing.Point(41, 81);
             this.LblEmail.Name = "LblEmail";
             this.LblEmail.Size = new System.Drawing.Size(36, 13);
             this.LblEmail.TabIndex = 0;
@@ -47,7 +48,7 @@
             // LblPass
             // 
             this.LblPass.AutoSize = true;
-            this.LblPass.Location = new System.Drawing.Point(41, 113);
+            this.LblPass.Location = new System.Drawing.Point(41, 152);
             this.LblPass.Name = "LblPass";
             this.LblPass.Size = new System.Drawing.Size(53, 13);
             this.LblPass.TabIndex = 1;
@@ -55,21 +56,22 @@
             // 
             // TBoxEmail
             // 
-            this.TBoxEmail.Location = new System.Drawing.Point(123, 42);
+            this.TBoxEmail.Location = new System.Drawing.Point(123, 74);
             this.TBoxEmail.Name = "TBoxEmail";
             this.TBoxEmail.Size = new System.Drawing.Size(100, 20);
             this.TBoxEmail.TabIndex = 2;
+            this.TBoxEmail.TextChanged += new System.EventHandler(this.TBoxEmail_TextChanged);
             // 
             // TBoxPass
             // 
-            this.TBoxPass.Location = new System.Drawing.Point(123, 113);
+            this.TBoxPass.Location = new System.Drawing.Point(123, 145);
             this.TBoxPass.Name = "TBoxPass";
             this.TBoxPass.Size = new System.Drawing.Size(100, 20);
             this.TBoxPass.TabIndex = 3;
             // 
             // BtnLogin
             // 
-            this.BtnLogin.Location = new System.Drawing.Point(71, 185);
+            this.BtnLogin.Location = new System.Drawing.Point(71, 214);
             this.BtnLogin.Name = "BtnLogin";
             this.BtnLogin.Size = new System.Drawing.Size(107, 28);
             this.BtnLogin.TabIndex = 4;
@@ -77,11 +79,23 @@
             this.BtnLogin.UseVisualStyleBackColor = true;
             this.BtnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
             // 
+            // LblDobrodosli
+            // 
+            this.LblDobrodosli.AutoSize = true;
+            this.LblDobrodosli.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblDobrodosli.Location = new System.Drawing.Point(49, 9);
+            this.LblDobrodosli.Name = "LblDobrodosli";
+            this.LblDobrodosli.Size = new System.Drawing.Size(163, 31);
+            this.LblDobrodosli.TabIndex = 5;
+            this.LblDobrodosli.Text = "Dobrodosli!";
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Bisque;
             this.ClientSize = new System.Drawing.Size(264, 287);
+            this.Controls.Add(this.LblDobrodosli);
             this.Controls.Add(this.BtnLogin);
             this.Controls.Add(this.TBoxPass);
             this.Controls.Add(this.TBoxEmail);
@@ -102,6 +116,7 @@
         private System.Windows.Forms.TextBox TBoxEmail;
         private System.Windows.Forms.TextBox TBoxPass;
         private System.Windows.Forms.Button BtnLogin;
+        private System.Windows.Forms.Label LblDobrodosli;
     }
 }
 
