@@ -50,5 +50,11 @@ namespace projekat_2026_StefanAndrejevic
         {
 
         }
+
+        private void LinkRegistracija_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Registracija nova = new Registracija();
+            nova.ShowDialog();
+        }
     }
 }

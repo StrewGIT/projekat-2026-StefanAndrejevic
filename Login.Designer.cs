@@ -34,6 +34,7 @@
             this.TBoxPass = new System.Windows.Forms.TextBox();
             this.BtnLogin = new System.Windows.Forms.Button();
             this.LblDobrodosli = new System.Windows.Forms.Label();
+            this.LinkRegistracija = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // LblEmail
@@ -89,12 +90,25 @@
             this.LblDobrodosli.TabIndex = 5;
             this.LblDobrodosli.Text = "Dobrodosli!";
             // 
+            // LinkRegistracija
+            // 
+            this.LinkRegistracija.AutoSize = true;
+            this.LinkRegistracija.LinkColor = System.Drawing.Color.Blue;
+            this.LinkRegistracija.Location = new System.Drawing.Point(94, 254);
+            this.LinkRegistracija.Name = "LinkRegistracija";
+            this.LinkRegistracija.Size = new System.Drawing.Size(62, 13);
+            this.LinkRegistracija.TabIndex = 6;
+            this.LinkRegistracija.TabStop = true;
+            this.LinkRegistracija.Text = "Registracija";
+            this.LinkRegistracija.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkRegistracija_LinkClicked);
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Bisque;
             this.ClientSize = new System.Drawing.Size(264, 287);
+            this.Controls.Add(this.LinkRegistracija);
             this.Controls.Add(this.LblDobrodosli);
             this.Controls.Add(this.BtnLogin);
             this.Controls.Add(this.TBoxPass);
@@ -117,6 +131,7 @@
         private System.Windows.Forms.TextBox TBoxPass;
         private System.Windows.Forms.Button BtnLogin;
         private System.Windows.Forms.Label LblDobrodosli;
+        private System.Windows.Forms.LinkLabel LinkRegistracija;
     }
 }
 
