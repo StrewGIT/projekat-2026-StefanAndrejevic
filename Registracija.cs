@@ -33,7 +33,7 @@ namespace projekat_2026_StefanAndrejevic
                 }
                 else
                 {
-                    string naredba = "insert into korisnik values('" + TboxEmail.Text + "','" + TboxPass.Text + "',0)";
+                    string naredba = "insert into korisnik values('" + TboxIme.Text + "','"  + TboxEmail.Text + "','" + TboxPass.Text + "',0)";
                     SqlCommand uradi = new SqlCommand(naredba, veza);
                     veza.Open();
                     uradi.ExecuteNonQuery();

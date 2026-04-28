@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace projekat_2026_StefanAndrejevic
 {
-    public partial class Glavna : Form
+    public partial class AdminPage : Form
     {
-        public Glavna()
+        public AdminPage()
         {
             InitializeComponent();
         }
 
-        private void Glavna_Load(object sender, EventArgs e)
+        private void AdminPage_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
         }

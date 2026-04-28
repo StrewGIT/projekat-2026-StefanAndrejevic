@@ -37,9 +37,20 @@ namespace projekat_2026_StefanAndrejevic
                 if (count == 0) MessageBox.Show("Uneti email nije validan.");
                 else
                 {
-                    if (podaci.Rows[0]["pass"].ToString() == TBoxPass.Text) {
+                    if (podaci.Rows[0]["lozinka"].ToString() == TBoxPass.Text) {
                         MessageBox.Show("Uspesno ste se ulogovali.");
-
+                        if(podaci.Rows[0]["admin"].ToString() == "1")
+                        {
+                            this.Hide();
+                            AdminPage adminPage = new AdminPage();
+                            adminPage.Show();
+                        }
+                        else
+                        {
+                            this.Hide();
+                            Glavna glavna = new Glavna();
+                            glavna.Show();
+                        }
                     }
                     else {MessageBox.Show("Uneli ste pogresnu lozinku.");}
                 }
