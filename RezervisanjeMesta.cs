@@ -10,16 +10,18 @@ using System.Windows.Forms;
 
 namespace projekat_2026_StefanAndrejevic
 {
-    public partial class AdminPage : Form
+    public partial class RezervisanjeMesta : Form
     {
         int KorisnikId;
-        public AdminPage(int KorisnikId)
+        DateTime datum;
+        public RezervisanjeMesta(int KorisnikId,DateTime datum)
         {
             InitializeComponent();
+            this.datum = datum;
             this.KorisnikId = KorisnikId;
         }
 
-        private void AdminPage_FormClosed(object sender, FormClosedEventArgs e)
+        private void RezervisanjeMesta_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
         }

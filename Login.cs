@@ -39,16 +39,16 @@ namespace projekat_2026_StefanAndrejevic
                 {
                     if (podaci.Rows[0]["lozinka"].ToString() == TBoxPass.Text) {
                         MessageBox.Show("Uspesno ste se ulogovali.");
-                        if(podaci.Rows[0]["admin"].ToString() == "1")
+                        if(podaci.Rows[0]["administrator"].ToString() == "1")
                         {
                             this.Hide();
-                            AdminPage adminPage = new AdminPage();
+                            AdminPage adminPage = new AdminPage(int.Parse(podaci.Rows[0]["id"].ToString()));
                             adminPage.Show();
                         }
                         else
                         {
                             this.Hide();
-                            Glavna glavna = new Glavna();
+                            Glavna glavna = new Glavna(int.Parse(podaci.Rows[0]["id"].ToString()));
                             glavna.Show();
                         }
                     }

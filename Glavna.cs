@@ -12,14 +12,24 @@ namespace projekat_2026_StefanAndrejevic
 {
     public partial class Glavna : Form
     {
-        public Glavna()
+        int KorisnikId;
+        public Glavna(int KorisnikId)
         {
             InitializeComponent();
+            this.KorisnikId = KorisnikId;
         }
 
-        private void Glavna_Load(object sender, EventArgs e)
+
+        private void Glavna_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void BtnRezervisi_Click(object sender, EventArgs e)
+        {
+            CalendarPopUp calendar = new CalendarPopUp(KorisnikId);
+            calendar.ParentForm = this;
+            calendar.ShowDialog();
         }
     }
 }

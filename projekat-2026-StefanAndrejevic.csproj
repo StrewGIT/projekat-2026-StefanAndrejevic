@@ -53,6 +53,12 @@
     <Compile Include="AdminPage.Designer.cs">
       <DependentUpon>AdminPage.cs</DependentUpon>
     </Compile>
+    <Compile Include="CalendarPopUp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CalendarPopUp.Designer.cs">
+      <DependentUpon>CalendarPopUp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Connection.cs" />
     <Compile Include="Glavna.cs">
       <SubType>Form</SubType>
@@ -74,8 +80,17 @@
     <Compile Include="Registracija.Designer.cs">
       <DependentUpon>Registracija.cs</DependentUpon>
     </Compile>
+    <Compile Include="RezervisanjeMesta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RezervisanjeMesta.Designer.cs">
+      <DependentUpon>RezervisanjeMesta.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AdminPage.resx">
       <DependentUpon>AdminPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CalendarPopUp.resx">
+      <DependentUpon>CalendarPopUp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Glavna.resx">
       <DependentUpon>Glavna.cs</DependentUpon>
@@ -94,6 +109,9 @@
     </Compile>
     <EmbeddedResource Include="Registracija.resx">
       <DependentUpon>Registracija.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RezervisanjeMesta.resx">
+      <DependentUpon>RezervisanjeMesta.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
