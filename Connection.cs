@@ -12,7 +12,7 @@ namespace projekat_2026_StefanAndrejevic
         public static SqlConnection Connect()
         {
             string cs;
-            cs = ConfigurationManager.ConnectionStrings["skola"].ConnectionString;
+            cs = ConfigurationManager.ConnectionStrings["kuca"].ConnectionString;
             return new SqlConnection(cs);
         }
     }

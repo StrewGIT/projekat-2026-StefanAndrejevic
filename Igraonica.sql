@@ -32,6 +32,7 @@ create table Rezervacija(
 	mesto int foreign key references Mesto(id) on delete cascade
 )
 go
+
 create table Artikal(
 id int primary key identity(1,1),
 naziv nvarchar(50),
@@ -41,11 +42,15 @@ cena int,
 go
 create table Racun(
 id int primary key identity(1,1),
-rezervacija int foreign key references Rezervacija(id),
 artikal int foreign key references Artikal(id),
 kolicina int
 )
-
+go
+drop table Racun_Rezervacija
+create table Racun_Rezervacija(
+id int primary key identity(1,1),
+racun int foreign key references Racun(id),
+rezervacija int foreign key references Rezervacija(id) )
 /*/////////////////////////////////////////////////////////////////////////////////// KORISNIK */
 
 go
@@ -290,6 +295,50 @@ end
 go
 
 go
+create or alter procedure generisi_termine_za_sva_mesta_u_danu @radni_dan_id int
+as
+begin
+    set nocount on;
+    set lock_timeout 3000;
+    declare @current_mesto_id int;
+    begin try
+        if not exists (select 1 from RadniDan where id = @radni_dan_id)
+        begin
+            return 1; 
+        end
+		if exists(select 1 from Rezervacija where radni_dan = @radni_dan_id)
+		begin
+            return 1; 
+        end
+        declare mesto_cursor cursor for 
+        select id from Mesto;
+        open mesto_cursor;
+        fetch next from mesto_cursor into @current_mesto_id;
+        while @@fetch_status = 0
+        begin
+            exec generisi_termine_za_dan 
+                @radni_dan_id = @radni_dan_id, 
+                @mesto_id = @current_mesto_id;
+            fetch next from mesto_cursor into @current_mesto_id;
+        end
+        close mesto_cursor;
+        deallocate mesto_cursor;
+        return 0;
+    end try
+    begin catch
+        if cursor_status('global', 'mesto_cursor') >= -1
+        begin
+            close mesto_cursor;
+            deallocate mesto_cursor;
+        end
+        
+        print error_message();
+        return @@error;
+    end catch
+end
+go
+
+go
 Create procedure Izmena_Rezervacije @id int,@korisnik int,@radnidan int, @pocetak time,@kraj time, @mesto int
 as 
 	Set lock_timeout 3000;
@@ -310,6 +359,78 @@ as
 go
 
 go
+Create procedure Rezervisi_Specificno_Mesto @id int,@korisnik int
+as 
+	Set lock_timeout 3000;
+	Begin Try
+			Update Rezervacija set korisnik=@korisnik where id=@id;
+			Return 1;
+	End Try
+	Begin Catch
+		Return @@error;
+	End Catch
+
+go
+
+go
+Create or alter procedure Rezervisi_Mesto_Tipa @korisnik int,@radnidan int,@pocetak time,@kraj time, @tip_mesta int
+as 
+	Set lock_timeout 3000;
+	declare @id int = (Select top 1 Rezervacija.id from Rezervacija join Mesto on Rezervacija.mesto = Mesto.id where Rezervacija.korisnik is null and @tip_mesta=Mesto.tip and @radnidan=radni_dan and @pocetak=termin_pocetak and @kraj=termin_kraj);
+	Begin Try
+		if(@id is not null)
+		Begin
+			Update Rezervacija set korisnik=@korisnik where Rezervacija.id=@id;
+			Return 1;
+		End
+		Else Begin
+			Return 0;
+		End
+	End Try
+	Begin Catch
+		Return @@error;
+	End Catch
+
+go
+
+go
+Create or alter procedure Rezervisi_Vise_Mesta_Tipa @korisnik int,@radnidan int,@pocetak time,@kraj time, @tip_mesta int, @kolicina int
+as 
+	Set lock_timeout 3000;
+	Begin Try
+			If((Select count(Rezervacija.id) from Rezervacija join Mesto on Rezervacija.mesto = Mesto.id where Rezervacija.korisnik is null and @tip_mesta=Mesto.tip and @radnidan=radni_dan and @pocetak=termin_pocetak and @kraj=termin_kraj)>=@kolicina)
+			Begin
+				declare @it int = 0;
+				While @it<@kolicina Begin
+					Exec Rezervisi_Mesto_Tipa @korisnik,@radnidan,@pocetak,@kraj,@tip_mesta;
+					set @it = @it + 1;
+				End
+				Return 1;
+			End
+			Else Begin
+				Return 0;
+			End
+	End Try
+	Begin Catch
+		Return @@error;
+	End Catch
+
+go
+
+go
+Create or alter procedure Broj_Slobodnih_Mesta @radnidan int,@pocetak time, @tip_mesta int
+as 
+	Set lock_timeout 3000;
+	Begin Try
+		Return (Select count(Rezervacija.id) from Rezervacija join Mesto on Rezervacija.mesto = Mesto.id where Rezervacija.korisnik is null and @tip_mesta=Mesto.tip and @radnidan=radni_dan and @pocetak=termin_pocetak);
+	End Try
+	Begin Catch
+		Return @@error;
+	End Catch
+
+go
+
+go
 Create procedure Brisanje_Rezervacije @id int
 as 
 	Set lock_timeout 3000;
@@ -321,3 +442,9 @@ as
 	End Catch
 
 go
+go
+Create procedure Generisi_Racun @korisnik
+
+/*/////////////////////VIEWS///////////////////// */
+create or alter view ViewTermini as select distinct CONCAT(LEFT(CONVERT(VARCHAR, termin_pocetak, 108), 5) ,'-',LEFT(CONVERT(VARCHAR, termin_kraj, 108), 5)) as Termin ,termin_pocetak,radni_dan from Rezervacija join Mesto on Rezervacija.mesto=Mesto.id join TipMesta on Mesto.tip = TipMesta.id where korisnik is null
+create or alter view ViewTipoviMesta as select distinct TipMesta.id,TipMesta.naziv,radni_dan from Rezervacija join Mesto on Rezervacija.mesto=Mesto.id join TipMesta on Mesto.tip = TipMesta.id where korisnik is null;

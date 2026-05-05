@@ -16,7 +16,7 @@ namespace projekat_2026_StefanAndrejevic
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+            Application.Run(new Glavna(1));
         }
     }
 }
