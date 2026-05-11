@@ -39,7 +39,7 @@ namespace projekat_2026_StefanAndrejevic
                 {
                     if (podaci.Rows[0]["lozinka"].ToString() == TBoxPass.Text) {
                         MessageBox.Show("Uspesno ste se ulogovali.");
-                        if(podaci.Rows[0]["administrator"].ToString() == "1")
+                        if (podaci.Rows[0]["administrator"].ToString() == "True")
                         {
                             this.Hide();
                             AdminPage adminPage = new AdminPage(int.Parse(podaci.Rows[0]["id"].ToString()));

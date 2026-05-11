@@ -373,10 +373,10 @@ as
 go
 
 go
-Create or alter procedure Rezervisi_Mesto_Tipa @korisnik int,@radnidan int,@pocetak time,@kraj time, @tip_mesta int
+Create or alter procedure Rezervisi_Mesto_Tipa @korisnik int,@radnidan int,@pocetak time, @tip_mesta int
 as 
 	Set lock_timeout 3000;
-	declare @id int = (Select top 1 Rezervacija.id from Rezervacija join Mesto on Rezervacija.mesto = Mesto.id where Rezervacija.korisnik is null and @tip_mesta=Mesto.tip and @radnidan=radni_dan and @pocetak=termin_pocetak and @kraj=termin_kraj);
+	declare @id int = (Select top 1 Rezervacija.id from Rezervacija join Mesto on Rezervacija.mesto = Mesto.id where Rezervacija.korisnik is null and @tip_mesta=Mesto.tip and @radnidan=radni_dan and @pocetak=termin_pocetak);
 	Begin Try
 		if(@id is not null)
 		Begin
@@ -394,15 +394,15 @@ as
 go
 
 go
-Create or alter procedure Rezervisi_Vise_Mesta_Tipa @korisnik int,@radnidan int,@pocetak time,@kraj time, @tip_mesta int, @kolicina int
+Create or alter procedure Rezervisi_Vise_Mesta_Tipa @korisnik int,@radnidan int,@pocetak time, @tip_mesta int, @kolicina int
 as 
 	Set lock_timeout 3000;
 	Begin Try
-			If((Select count(Rezervacija.id) from Rezervacija join Mesto on Rezervacija.mesto = Mesto.id where Rezervacija.korisnik is null and @tip_mesta=Mesto.tip and @radnidan=radni_dan and @pocetak=termin_pocetak and @kraj=termin_kraj)>=@kolicina)
+			If((Select count(Rezervacija.id) from Rezervacija join Mesto on Rezervacija.mesto = Mesto.id where Rezervacija.korisnik is null and @tip_mesta=Mesto.tip and @radnidan=radni_dan and @pocetak=termin_pocetak)>=@kolicina)
 			Begin
 				declare @it int = 0;
 				While @it<@kolicina Begin
-					Exec Rezervisi_Mesto_Tipa @korisnik,@radnidan,@pocetak,@kraj,@tip_mesta;
+					Exec Rezervisi_Mesto_Tipa @korisnik,@radnidan,@pocetak,@tip_mesta;
 					set @it = @it + 1;
 				End
 				Return 1;

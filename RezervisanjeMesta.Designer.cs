@@ -50,7 +50,7 @@
             this.CBoxTipMesta.Name = "CBoxTipMesta";
             this.CBoxTipMesta.Size = new System.Drawing.Size(121, 28);
             this.CBoxTipMesta.TabIndex = 0;
-            this.CBoxTipMesta.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.CBoxTipMesta.SelectionChangeCommitted += new System.EventHandler(this.CBoxTipMesta_SelectionChangeCommitted);
             // 
             // TBoxSlobodnaMesta
             // 
@@ -70,6 +70,7 @@
             this.BtnRezervisi.TabIndex = 4;
             this.BtnRezervisi.Text = "Rezervisi";
             this.BtnRezervisi.UseVisualStyleBackColor = true;
+            this.BtnRezervisi.Click += new System.EventHandler(this.BtnRezervisi_Click);
             // 
             // CBoxTermin
             // 
@@ -79,7 +80,7 @@
             this.CBoxTermin.Name = "CBoxTermin";
             this.CBoxTermin.Size = new System.Drawing.Size(121, 28);
             this.CBoxTermin.TabIndex = 5;
-            this.CBoxTermin.SelectedIndexChanged += new System.EventHandler(this.CBoxTermin_SelectedIndexChanged);
+            this.CBoxTermin.SelectionChangeCommitted += new System.EventHandler(this.CBoxTermin_SelectionChangeCommitted);
             // 
             // NumKolicina
             // 
@@ -98,6 +99,7 @@
             0,
             0,
             0});
+            this.NumKolicina.ValueChanged += new System.EventHandler(this.NumKolicina_ValueChanged);
             // 
             // TBoxCena
             // 

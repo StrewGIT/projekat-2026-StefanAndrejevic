@@ -33,14 +33,21 @@ namespace projekat_2026_StefanAndrejevic
             connection.Open();
             try
             {
-                int result = (int)command.ExecuteScalar();
-                MessageBox.Show(result.ToString());
+                object value = command.ExecuteScalar();
+
+                if (value == null || value == DBNull.Value)
+                {
+                    MessageBox.Show("Datum koji ste izabrali je neradan dan.");
+                    return -1;
+                }
+
+                int result = Convert.ToInt32(value);
                 return result;
                 connection.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Datum koji ste izabrali je neradan dan.");
+                MessageBox.Show(ex.Message);
                 return -1;
                 connection.Close();
             }
@@ -50,9 +57,15 @@ namespace projekat_2026_StefanAndrejevic
         }
         private void BtnIzaberiMesto_Click(object sender, EventArgs e)
         {
-            this.ParentForm.Hide();
-            RezervisanjeMesta rezervisanje_mesta = new RezervisanjeMesta(KorisnikId, GetId(SqlDatum(Calendar.SelectionStart)));
+            
+            int datumId = GetId(SqlDatum(Calendar.SelectionStart));
+            if(datumId == -1)
+            {
+                return;
+            }
+            RezervisanjeMesta rezervisanje_mesta = new RezervisanjeMesta(KorisnikId, datumId,ParentForm);
             rezervisanje_mesta.Show();
+            this.ParentForm.Hide();
             this.Close();
         }
 

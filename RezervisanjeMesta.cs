@@ -15,21 +15,24 @@ namespace projekat_2026_StefanAndrejevic
     {
         int KorisnikId;
         int datum;
+        Form ParentForm;
         public RezervisanjeMesta(int KorisnikId,int datum)
         {
             InitializeComponent();
             this.datum = datum;
             this.KorisnikId = KorisnikId;
         }
+        public RezervisanjeMesta(int KorisnikId, int datum,Form ParentForm)
+        {
+            InitializeComponent();
+            this.datum = datum;
+            this.KorisnikId = KorisnikId;
+            this.ParentForm = ParentForm;
+        }
 
         private void RezervisanjeMesta_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Application.Exit();
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RefreshBrojMesta();
+            ParentForm.Show();
         }
 
         private void RezervisanjeMesta_Load(object sender, EventArgs e)
@@ -37,6 +40,7 @@ namespace projekat_2026_StefanAndrejevic
             PopulateCboxTipMesta();
             PopulateCboxTermin();
             RefreshBrojMesta();
+            IzracunajCenu();
         }
         private void PopulateCboxTipMesta()
         {
@@ -70,17 +74,99 @@ namespace projekat_2026_StefanAndrejevic
             cmd.Parameters.AddWithValue("@tip_mesta", CBoxTipMesta.SelectedValue);
             var returnParameter = cmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
-
+            try
+            {
                 veza.Open();
                 cmd.ExecuteNonQuery();
                 int result = (int)returnParameter.Value;
                 veza.Close();
-            TBoxSlobodnaMesta.Text = result.ToString();
+                TBoxSlobodnaMesta.Text = result.ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Sql error:" + ex.Message);
+                veza.Close();
+                return;
+            }
+            
         }
 
-        private void CBoxTermin_SelectedIndexChanged(object sender, EventArgs e)
+        private void IzracunajCenu()
+        {
+            SqlConnection veza = Connection.Connect();
+            SqlCommand cmd = new SqlCommand("Select top 1 cena from TipMesta where id=" + CBoxTipMesta.SelectedValue, veza);
+            veza.Open();
+            try
+            {
+                int result = (int)cmd.ExecuteScalar();
+                veza.Close();
+                TBoxCena.Text = (result * NumKolicina.Value).ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Sql error:" + ex.Message);
+                veza.Close();
+            }
+        }
+
+        private void CBoxTipMesta_SelectionChangeCommitted(object sender, EventArgs e)
         {
             RefreshBrojMesta();
+            IzracunajCenu();
+            NumKolicina_ValueChanged(sender, e);
+        }
+
+        private void CBoxTermin_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            RefreshBrojMesta();
+            NumKolicina_ValueChanged(sender, e);
+        }
+
+        private void NumKolicina_ValueChanged(object sender, EventArgs e)
+        {
+            IzracunajCenu();
+            if(NumKolicina.Value > int.Parse(TBoxSlobodnaMesta.Text))
+            {
+                NumKolicina.Value = int.Parse(TBoxSlobodnaMesta.Text);
+            }
+        }
+
+        private void BtnRezervisi_Click(object sender, EventArgs e)
+        {
+            SqlConnection veza = Connection.Connect();
+            SqlCommand cmd = new SqlCommand("Rezervisi_Vise_Mesta_Tipa", veza);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@korisnik", KorisnikId);
+            cmd.Parameters.AddWithValue("@radnidan", datum);
+            cmd.Parameters.AddWithValue("@pocetak", CBoxTermin.SelectedValue);
+            cmd.Parameters.AddWithValue("@tip_mesta", CBoxTipMesta.SelectedValue);
+            cmd.Parameters.AddWithValue("@kolicina", NumKolicina.Value);
+            var returnParameter = cmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+            try
+            {
+                veza.Open();
+                cmd.ExecuteNonQuery();
+                int result = (int)returnParameter.Value;
+                if(result!=1)
+                {
+                    MessageBox.Show("Nije uspelo rezervisanje mesta. Pokusajte ponovo.");
+                }
+                else
+                {
+                    MessageBox.Show("Uspesno ste rezervisali mesto.");
+                    ParentForm.Show();
+                    this.Close();
+                }
+                veza.Close();
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Sql error:" + ex.Message);
+                veza.Close();
+                return;
+            }
         }
     }
 }
