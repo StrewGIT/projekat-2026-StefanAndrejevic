@@ -40,17 +40,17 @@ kolicina int,
 cena int,
 )
 go
+
 create table Racun(
 id int primary key identity(1,1),
-artikal int foreign key references Artikal(id),
+artikal int foreign key references Artikal(id) ON DELETE CASCADE,
 kolicina int
 )
 go
-drop table Racun_Rezervacija
 create table Racun_Rezervacija(
 id int primary key identity(1,1),
-racun int foreign key references Racun(id),
-rezervacija int foreign key references Rezervacija(id) )
+racun int foreign key references Racun(id) ON DELETE CASCADE,
+rezervacija int foreign key references Rezervacija(id) ON DELETE CASCADE)
 /*/////////////////////////////////////////////////////////////////////////////////// KORISNIK */
 
 go
@@ -196,22 +196,51 @@ go
 /*/////////////////////////////////////////////////////////////////////////////////// RadniDan */
 
 go
-Create Procedure Unos_RadnogDana @datum date, @pocetak time, @kraj time, @duzina time
+Create or alter Procedure Unos_RadnogDana @datum date, @pocetak time, @kraj time, @duzina time
 as
 	Set lock_timeout 3000;
 	Begin Try
 		if(@pocetak>=@kraj or exists(Select top 1 datum from RadniDan where datum=@datum))
 			Begin
-			Return 1;
+			Return -1;
 			End
 		Else Begin
 			Insert into RadniDan(datum,pocetak,kraj,duzina_termina) values(@datum,@pocetak,@kraj,@duzina);
+			RETURN 0;
 			End
 	End Try
 	Begin Catch
 		Return @@error;
 	End Catch
 go
+
+CREATE PROCEDURE Unos_RadnogDana 
+    @datum DATE, 
+    @pocetak TIME(0), 
+    @kraj TIME(0), 
+    @duzina TIME(0),
+    @newId INT OUTPUT 
+AS
+    SET LOCK_TIMEOUT 3000;
+    SET @newId = -1; 
+    BEGIN TRY
+        IF (@pocetak >= @kraj OR EXISTS (SELECT TOP 1 datum FROM RadniDan WHERE datum = @datum))
+            BEGIN
+                RETURN -1;
+            END
+        ELSE
+            BEGIN
+                INSERT INTO RadniDan(datum, pocetak, kraj, duzina_termina)
+                VALUES (@datum, @pocetak, @kraj, @duzina);
+
+                SET @newId = SCOPE_IDENTITY();			
+                RETURN 0;
+            END
+    END TRY
+    BEGIN CATCH
+        RETURN @@ERROR;
+    END CATCH
+GO
 
 go
 Create Procedure Brisanje_RadnogDana @id int
@@ -448,3 +477,4 @@ Create procedure Generisi_Racun @korisnik
 /*/////////////////////VIEWS///////////////////// */
 create or alter view ViewTermini as select distinct CONCAT(LEFT(CONVERT(VARCHAR, termin_pocetak, 108), 5) ,'-',LEFT(CONVERT(VARCHAR, termin_kraj, 108), 5)) as Termin ,termin_pocetak,radni_dan from Rezervacija join Mesto on Rezervacija.mesto=Mesto.id join TipMesta on Mesto.tip = TipMesta.id where korisnik is null
 create or alter view ViewTipoviMesta as select distinct TipMesta.id,TipMesta.naziv,radni_dan from Rezervacija join Mesto on Rezervacija.mesto=Mesto.id join TipMesta on Mesto.tip = TipMesta.id where korisnik is null;
+create view viewBrojMestaPoTipu as SELECT tm.id, tm.naziv, COUNT(m.id) AS broj_mesta FROM TipMesta tm LEFT JOIN Mesto m ON tm.id = m.tip GROUP BY tm.id, tm.naziv
