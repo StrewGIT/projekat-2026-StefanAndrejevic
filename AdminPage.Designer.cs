@@ -37,6 +37,12 @@
             this.LblKraj = new System.Windows.Forms.Label();
             this.LblTrajanje = new System.Windows.Forms.Label();
             this.DTimeTrajanje = new System.Windows.Forms.DateTimePicker();
+            this.DGridView = new System.Windows.Forms.DataGridView();
+            this.LblMesta = new System.Windows.Forms.Label();
+            this.BtnDelete = new System.Windows.Forms.Button();
+            this.BtnUpdate = new System.Windows.Forms.Button();
+            this.BtnInsert = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.DGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // Calendar
@@ -51,7 +57,7 @@
             this.BtnDodajRadniDan.Name = "BtnDodajRadniDan";
             this.BtnDodajRadniDan.Size = new System.Drawing.Size(199, 34);
             this.BtnDodajRadniDan.TabIndex = 1;
-            this.BtnDodajRadniDan.Text = "Dodaj radni dan";
+            this.BtnDodajRadniDan.Text = "Dodaj radni dan i generisi termine";
             this.BtnDodajRadniDan.UseVisualStyleBackColor = true;
             this.BtnDodajRadniDan.Click += new System.EventHandler(this.BtnDodajRadniDan_Click);
             // 
@@ -112,11 +118,69 @@
             this.DTimeTrajanje.Size = new System.Drawing.Size(92, 20);
             this.DTimeTrajanje.TabIndex = 8;
             // 
+            // DGridView
+            // 
+            this.DGridView.AllowUserToAddRows = false;
+            this.DGridView.AllowUserToDeleteRows = false;
+            this.DGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DGridView.Location = new System.Drawing.Point(380, 40);
+            this.DGridView.MultiSelect = false;
+            this.DGridView.Name = "DGridView";
+            this.DGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.DGridView.Size = new System.Drawing.Size(339, 162);
+            this.DGridView.TabIndex = 9;
+            // 
+            // LblMesta
+            // 
+            this.LblMesta.AutoSize = true;
+            this.LblMesta.Location = new System.Drawing.Point(540, 18);
+            this.LblMesta.Name = "LblMesta";
+            this.LblMesta.Size = new System.Drawing.Size(36, 13);
+            this.LblMesta.TabIndex = 10;
+            this.LblMesta.Text = "Mesta";
+            // 
+            // BtnDelete
+            // 
+            this.BtnDelete.BackColor = System.Drawing.Color.LightCoral;
+            this.BtnDelete.Location = new System.Drawing.Point(380, 211);
+            this.BtnDelete.Name = "BtnDelete";
+            this.BtnDelete.Size = new System.Drawing.Size(103, 35);
+            this.BtnDelete.TabIndex = 11;
+            this.BtnDelete.Text = "Obrisi red";
+            this.BtnDelete.UseVisualStyleBackColor = false;
+            this.BtnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
+            // 
+            // BtnUpdate
+            // 
+            this.BtnUpdate.BackColor = System.Drawing.Color.Khaki;
+            this.BtnUpdate.Location = new System.Drawing.Point(489, 211);
+            this.BtnUpdate.Name = "BtnUpdate";
+            this.BtnUpdate.Size = new System.Drawing.Size(124, 35);
+            this.BtnUpdate.TabIndex = 12;
+            this.BtnUpdate.Text = "Promeni red";
+            this.BtnUpdate.UseVisualStyleBackColor = false;
+            this.BtnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
+            // 
+            // BtnInsert
+            // 
+            this.BtnInsert.BackColor = System.Drawing.Color.PaleGreen;
+            this.BtnInsert.Location = new System.Drawing.Point(619, 211);
+            this.BtnInsert.Name = "BtnInsert";
+            this.BtnInsert.Size = new System.Drawing.Size(100, 35);
+            this.BtnInsert.TabIndex = 13;
+            this.BtnInsert.Text = "Dodaj novi red";
+            this.BtnInsert.UseVisualStyleBackColor = false;
+            // 
             // AdminPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.BtnInsert);
+            this.Controls.Add(this.BtnUpdate);
+            this.Controls.Add(this.BtnDelete);
+            this.Controls.Add(this.LblMesta);
+            this.Controls.Add(this.DGridView);
             this.Controls.Add(this.DTimeTrajanje);
             this.Controls.Add(this.LblTrajanje);
             this.Controls.Add(this.LblKraj);
@@ -130,6 +194,7 @@
             this.Text = "AdminPage";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AdminPage_FormClosed);
             this.Load += new System.EventHandler(this.AdminPage_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.DGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -146,5 +211,10 @@
         private System.Windows.Forms.Label LblKraj;
         private System.Windows.Forms.Label LblTrajanje;
         private System.Windows.Forms.DateTimePicker DTimeTrajanje;
+        private System.Windows.Forms.DataGridView DGridView;
+        private System.Windows.Forms.Label LblMesta;
+        private System.Windows.Forms.Button BtnDelete;
+        private System.Windows.Forms.Button BtnUpdate;
+        private System.Windows.Forms.Button BtnInsert;
     }
 }
