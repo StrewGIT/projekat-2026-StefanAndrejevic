@@ -1,35 +1,20 @@
-﻿namespace projekat_2026_StefanAndrejevic
+namespace projekat_2026_StefanAndrejevic
 {
     partial class Glavna
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.BtnRezervisi = new System.Windows.Forms.Button();
             this.BtnMojeRezervacije = new System.Windows.Forms.Button();
+            this.BtnLogOut = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BtnRezervisi
@@ -48,26 +33,39 @@
             this.BtnMojeRezervacije.Name = "BtnMojeRezervacije";
             this.BtnMojeRezervacije.Size = new System.Drawing.Size(150, 47);
             this.BtnMojeRezervacije.TabIndex = 1;
-            this.BtnMojeRezervacije.Text = "Moje rezervacije";
+            this.BtnMojeRezervacije.Text = "Moji racuni";
             this.BtnMojeRezervacije.UseVisualStyleBackColor = true;
+            this.BtnMojeRezervacije.Click += new System.EventHandler(this.BtnMojiRacuni_Click);
+            // 
+            // BtnLogOut
+            // 
+            this.BtnLogOut.BackColor = System.Drawing.Color.LightCoral;
+            this.BtnLogOut.Location = new System.Drawing.Point(12, 12);
+            this.BtnLogOut.Name = "BtnLogOut";
+            this.BtnLogOut.Size = new System.Drawing.Size(75, 23);
+            this.BtnLogOut.TabIndex = 2;
+            this.BtnLogOut.Text = "Log out";
+            this.BtnLogOut.UseVisualStyleBackColor = false;
+            this.BtnLogOut.Click += new System.EventHandler(this.BtnLogOut_Click);
             // 
             // Glavna
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 259);
+            this.Controls.Add(this.BtnLogOut);
             this.Controls.Add(this.BtnMojeRezervacije);
             this.Controls.Add(this.BtnRezervisi);
             this.Name = "Glavna";
-            this.Text = "Glavna";
+            this.Text = "Igraonica";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Glavna_FormClosed);
             this.ResumeLayout(false);
 
         }
-
         #endregion
 
         private System.Windows.Forms.Button BtnRezervisi;
         private System.Windows.Forms.Button BtnMojeRezervacije;
+        private System.Windows.Forms.Button BtnLogOut;
     }
 }

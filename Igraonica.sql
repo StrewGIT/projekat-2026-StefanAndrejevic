@@ -32,7 +32,6 @@ create table Rezervacija(
 	mesto int foreign key references Mesto(id) on delete cascade
 )
 go
-
 create table Artikal(
 id int primary key identity(1,1),
 naziv nvarchar(50),
@@ -43,9 +42,15 @@ go
 
 create table Racun(
 id int primary key identity(1,1),
-artikal int foreign key references Artikal(id) ON DELETE CASCADE,
-kolicina int
+korisnik int foreign key references Korisnik(id)
 )
+
+CREATE TABLE RacunArtikal (
+    id          int PRIMARY KEY IDENTITY(1,1),
+    racun       int NOT NULL FOREIGN KEY REFERENCES Racun(id) ON DELETE CASCADE,
+    artikal     int NOT NULL FOREIGN KEY REFERENCES Artikal(id) ON DELETE CASCADE,
+    kolicina    int NOT NULL DEFAULT 1
+);
 go
 create table Racun_Rezervacija(
 id int primary key identity(1,1),
@@ -214,7 +219,7 @@ as
 	End Catch
 go
 
-CREATE PROCEDURE Unos_RadnogDana 
+CREATE or alter PROCEDURE Unos_RadnogDana 
     @datum DATE, 
     @pocetak TIME(0), 
     @kraj TIME(0), 
@@ -471,9 +476,182 @@ as
 	End Catch
 
 go
-go
-Create procedure Generisi_Racun @korisnik
 
+GO
+CREATE OR ALTER PROCEDURE Unos_Artikla @naziv nvarchar(50), @kolicina int, @cena int
+AS
+    SET LOCK_TIMEOUT 3000;
+    BEGIN TRY
+        IF EXISTS (SELECT TOP 1 naziv FROM Artikal WHERE naziv = @naziv)
+            RETURN 1;
+        ELSE
+        BEGIN
+            INSERT INTO Artikal(naziv, kolicina, cena) VALUES (@naziv, @kolicina, @cena);
+            RETURN 0;
+        END
+    END TRY
+    BEGIN CATCH
+        RETURN @@ERROR;
+    END CATCH
+GO
+
+CREATE OR ALTER PROCEDURE Izmena_Artikla @id int, @naziv nvarchar(50), @kolicina int, @cena int
+AS
+    SET LOCK_TIMEOUT 3000;
+    BEGIN TRY
+        UPDATE Artikal SET naziv = @naziv, kolicina = @kolicina, cena = @cena WHERE id = @id;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        RETURN @@ERROR;
+    END CATCH
+GO
+
+CREATE OR ALTER PROCEDURE Brisanje_Artikla @id int
+AS
+    SET LOCK_TIMEOUT 3000;
+    BEGIN TRY
+        DELETE FROM Artikal WHERE id = @id;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        RETURN @@ERROR;
+    END CATCH
+GO
+
+-- ============================================================
+-- STORED PROCEDURES: Racun
+-- ============================================================
+
+-- Kreira novi racun za korisnika na osnovu rezervacije
+-- Vraca novi racun ID
+CREATE OR ALTER PROCEDURE Kreiraj_Racun @korisnik int, @rezervacija int, @racunId int OUTPUT
+AS
+    SET LOCK_TIMEOUT 3000;
+    BEGIN TRY
+        INSERT INTO Racun(korisnik) VALUES (@korisnik);
+        SET @racunId = SCOPE_IDENTITY();
+        INSERT INTO Racun_Rezervacija(racun, rezervacija) VALUES (@racunId, @rezervacija);
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        RETURN @@ERROR;
+    END CATCH
+GO
+
+-- Dodaje artikal na racun (smanjuje zalihu)
+CREATE OR ALTER PROCEDURE Dodaj_Artikal_Na_Racun @racunId int, @artikalId int, @kolicina int
+AS
+    SET LOCK_TIMEOUT 3000;
+    BEGIN TRY
+        -- Provjera zalihe
+        IF (SELECT kolicina FROM Artikal WHERE id = @artikalId) < @kolicina
+            RETURN -1;
+
+        IF EXISTS (SELECT 1 FROM RacunArtikal WHERE racun = @racunId AND artikal = @artikalId)
+            UPDATE RacunArtikal SET kolicina = kolicina + @kolicina
+            WHERE racun = @racunId AND artikal = @artikalId;
+        ELSE
+            INSERT INTO RacunArtikal(racun, artikal, kolicina) VALUES (@racunId, @artikalId, @kolicina);
+
+        UPDATE Artikal SET kolicina = kolicina - @kolicina WHERE id = @artikalId;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        RETURN @@ERROR;
+    END CATCH
+GO
+
+-- Otkazi racun: vraca artikle na zalihu, oslobadja rezervacije, brise racun
+CREATE OR ALTER PROCEDURE Otkazi_Racun @racunId int
+AS
+    SET LOCK_TIMEOUT 3000;
+    BEGIN TRY
+        -- Vrati zalihe artikala
+        UPDATE a
+        SET a.kolicina = a.kolicina + ra.kolicina
+        FROM Artikal a
+        JOIN RacunArtikal ra ON a.id = ra.artikal
+        WHERE ra.racun = @racunId;
+
+        -- Oslobodi rezervacije (postavi korisnik na NULL)
+        UPDATE Rezervacija
+        SET korisnik = NULL
+        WHERE id IN (
+            SELECT rezervacija FROM Racun_Rezervacija WHERE racun = @racunId
+        );
+
+        -- Obrisi racun (CASCADE ce obrisati RacunArtikal i Racun_Rezervacija)
+        DELETE FROM Racun WHERE id = @racunId;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        RETURN @@ERROR;
+    END CATCH
+GO
+
+-- Prikaz racuna korisnika
+CREATE OR ALTER VIEW ViewRacuniKorisnika AS
+    SELECT
+        r.id AS racun_id,
+        r.korisnik,
+        rd.datum,
+        rr.rezervacija AS rezervacija_id,
+        rez.termin_pocetak,
+        rez.termin_kraj,
+        tm.naziv AS tip_mesta
+    FROM Racun r
+    JOIN Racun_Rezervacija rr ON r.id = rr.racun
+    JOIN Rezervacija rez ON rr.rezervacija = rez.id
+    JOIN RadniDan rd ON rez.radni_dan = rd.id
+    JOIN Mesto m ON rez.mesto = m.id
+    JOIN TipMesta tm ON m.tip = tm.id;
+GO
+
+-- Suma racuna (rezervacije + artikli)
+
+CREATE OR ALTER VIEW ViewRacunSuma AS
+    SELECT
+        r.id        AS racun_id,
+        r.korisnik,
+        ISNULL(rez_suma.cena_rezervacija, 0) + ISNULL(art_suma.cena_artikala, 0) AS ukupno
+    FROM Racun r
+
+    -- Suma cena svih rezervacija na racunu (svako mesto se racuna posebno)
+    LEFT JOIN (
+        SELECT rr.racun, SUM(tm.cena) AS cena_rezervacija
+        FROM Racun_Rezervacija rr
+        JOIN Rezervacija rez ON rr.rezervacija = rez.id
+        JOIN Mesto       m   ON rez.mesto      = m.id
+        JOIN TipMesta    tm  ON m.tip           = tm.id
+        GROUP BY rr.racun
+    ) rez_suma ON rez_suma.racun = r.id
+
+    -- Suma cena artikala na racunu
+    LEFT JOIN (
+        SELECT ra.racun, SUM(ra.kolicina * a.cena) AS cena_artikala
+        FROM RacunArtikal ra
+        JOIN Artikal a ON ra.artikal = a.id
+        GROUP BY ra.racun
+    ) art_suma ON art_suma.racun = r.id;
+GO
+create or alter view viewRacuni as SELECT DISTINCT top 1000
+                    r.korisnik as rdk
+					,r.id                                    AS [Racun ID],
+                    rd.datum                                AS [Datum],
+                    LEFT(CONVERT(VARCHAR, rez.termin_pocetak, 108), 5)
+                        + ' - ' +
+                    LEFT(CONVERT(VARCHAR, rez.termin_kraj,   108), 5) AS [Termin],
+                    tm.naziv                                AS [Tip mesta],
+                    ISNULL(rs.ukupno, 0)                   AS [Ukupno RSD]
+                FROM Racun r
+                JOIN Racun_Rezervacija rr  ON r.id = rr.racun
+                JOIN Rezervacija       rez ON rr.rezervacija = rez.id
+                JOIN RadniDan          rd  ON rez.radni_dan = rd.id
+                JOIN Mesto             m   ON rez.mesto = m.id
+                JOIN TipMesta          tm  ON m.tip = tm.id
+                LEFT JOIN ViewRacunSuma rs ON rs.racun_id = r.id
+				ORDER BY rd.datum DESC, r.id DESC
 /*/////////////////////VIEWS///////////////////// */
 create or alter view ViewTermini as select distinct CONCAT(LEFT(CONVERT(VARCHAR, termin_pocetak, 108), 5) ,'-',LEFT(CONVERT(VARCHAR, termin_kraj, 108), 5)) as Termin ,termin_pocetak,radni_dan from Rezervacija join Mesto on Rezervacija.mesto=Mesto.id join TipMesta on Mesto.tip = TipMesta.id where korisnik is null
 create or alter view ViewTipoviMesta as select distinct TipMesta.id,TipMesta.naziv,radni_dan from Rezervacija join Mesto on Rezervacija.mesto=Mesto.id join TipMesta on Mesto.tip = TipMesta.id where korisnik is null;

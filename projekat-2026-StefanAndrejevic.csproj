@@ -86,6 +86,21 @@
     <Compile Include="RezervisanjeMesta.Designer.cs">
       <DependentUpon>RezervisanjeMesta.cs</DependentUpon>
     </Compile>
+    <Compile Include="MojiRacuni.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MojiRacuni.Designer.cs">
+      <DependentUpon>MojiRacuni.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ArtikalDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TipMestaDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DodajArtikalNaRacunDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <EmbeddedResource Include="AdminPage.resx">
       <DependentUpon>AdminPage.cs</DependentUpon>
     </EmbeddedResource>

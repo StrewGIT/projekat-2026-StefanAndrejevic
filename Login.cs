@@ -42,13 +42,13 @@ namespace projekat_2026_StefanAndrejevic
                         if (podaci.Rows[0]["administrator"].ToString() == "True")
                         {
                             this.Hide();
-                            AdminPage adminPage = new AdminPage(int.Parse(podaci.Rows[0]["id"].ToString()));
+                            AdminPage adminPage = new AdminPage(int.Parse(podaci.Rows[0]["id"].ToString()),this);
                             adminPage.Show();
                         }
                         else
                         {
                             this.Hide();
-                            Glavna glavna = new Glavna(int.Parse(podaci.Rows[0]["id"].ToString()));
+                            Glavna glavna = new Glavna(int.Parse(podaci.Rows[0]["id"].ToString()),this);
                             glavna.Show();
                         }
                     }
