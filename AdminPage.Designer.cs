@@ -42,7 +42,13 @@
             this.BtnDelete = new System.Windows.Forms.Button();
             this.BtnUpdate = new System.Windows.Forms.Button();
             this.BtnInsert = new System.Windows.Forms.Button();
+            this.BtnDodajArtikal = new System.Windows.Forms.Button();
+            this.BtnPromeniArtikal = new System.Windows.Forms.Button();
+            this.BtnObrisiArtikal = new System.Windows.Forms.Button();
+            this.LblArtikli = new System.Windows.Forms.Label();
+            this.DGridArtikli = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.DGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DGridArtikli)).BeginInit();
             this.SuspendLayout();
             // 
             // Calendar
@@ -171,11 +177,67 @@
             this.BtnInsert.Text = "Dodaj novi red";
             this.BtnInsert.UseVisualStyleBackColor = false;
             // 
+            // BtnDodajArtikal
+            // 
+            this.BtnDodajArtikal.BackColor = System.Drawing.Color.PaleGreen;
+            this.BtnDodajArtikal.Location = new System.Drawing.Point(619, 447);
+            this.BtnDodajArtikal.Name = "BtnDodajArtikal";
+            this.BtnDodajArtikal.Size = new System.Drawing.Size(100, 35);
+            this.BtnDodajArtikal.TabIndex = 18;
+            this.BtnDodajArtikal.Text = "Dodaj novi red";
+            this.BtnDodajArtikal.UseVisualStyleBackColor = false;
+            // 
+            // BtnPromeniArtikal
+            // 
+            this.BtnPromeniArtikal.BackColor = System.Drawing.Color.Khaki;
+            this.BtnPromeniArtikal.Location = new System.Drawing.Point(489, 447);
+            this.BtnPromeniArtikal.Name = "BtnPromeniArtikal";
+            this.BtnPromeniArtikal.Size = new System.Drawing.Size(124, 35);
+            this.BtnPromeniArtikal.TabIndex = 17;
+            this.BtnPromeniArtikal.Text = "Promeni red";
+            this.BtnPromeniArtikal.UseVisualStyleBackColor = false;
+            // 
+            // BtnObrisiArtikal
+            // 
+            this.BtnObrisiArtikal.BackColor = System.Drawing.Color.LightCoral;
+            this.BtnObrisiArtikal.Location = new System.Drawing.Point(380, 447);
+            this.BtnObrisiArtikal.Name = "BtnObrisiArtikal";
+            this.BtnObrisiArtikal.Size = new System.Drawing.Size(103, 35);
+            this.BtnObrisiArtikal.TabIndex = 16;
+            this.BtnObrisiArtikal.Text = "Obrisi red";
+            this.BtnObrisiArtikal.UseVisualStyleBackColor = false;
+            // 
+            // LblArtikli
+            // 
+            this.LblArtikli.AutoSize = true;
+            this.LblArtikli.Location = new System.Drawing.Point(540, 254);
+            this.LblArtikli.Name = "LblArtikli";
+            this.LblArtikli.Size = new System.Drawing.Size(32, 13);
+            this.LblArtikli.TabIndex = 15;
+            this.LblArtikli.Text = "Artikli";
+            // 
+            // DGridArtikli
+            // 
+            this.DGridArtikli.AllowUserToAddRows = false;
+            this.DGridArtikli.AllowUserToDeleteRows = false;
+            this.DGridArtikli.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DGridArtikli.Location = new System.Drawing.Point(380, 276);
+            this.DGridArtikli.MultiSelect = false;
+            this.DGridArtikli.Name = "DGridArtikli";
+            this.DGridArtikli.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.DGridArtikli.Size = new System.Drawing.Size(339, 162);
+            this.DGridArtikli.TabIndex = 14;
+            // 
             // AdminPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(819, 495);
+            this.Controls.Add(this.BtnDodajArtikal);
+            this.Controls.Add(this.BtnPromeniArtikal);
+            this.Controls.Add(this.BtnObrisiArtikal);
+            this.Controls.Add(this.LblArtikli);
+            this.Controls.Add(this.DGridArtikli);
             this.Controls.Add(this.BtnInsert);
             this.Controls.Add(this.BtnUpdate);
             this.Controls.Add(this.BtnDelete);
@@ -195,6 +257,7 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AdminPage_FormClosed);
             this.Load += new System.EventHandler(this.AdminPage_Load);
             ((System.ComponentModel.ISupportInitialize)(this.DGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DGridArtikli)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -216,5 +279,10 @@
         private System.Windows.Forms.Button BtnDelete;
         private System.Windows.Forms.Button BtnUpdate;
         private System.Windows.Forms.Button BtnInsert;
+        private System.Windows.Forms.Button BtnDodajArtikal;
+        private System.Windows.Forms.Button BtnPromeniArtikal;
+        private System.Windows.Forms.Button BtnObrisiArtikal;
+        private System.Windows.Forms.Label LblArtikli;
+        private System.Windows.Forms.DataGridView DGridArtikli;
     }
 }
